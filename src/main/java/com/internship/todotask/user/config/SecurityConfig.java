@@ -26,8 +26,6 @@ public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
 
-    private final PasswordEncoder passwordEncoder;
-
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) {
         http
@@ -36,9 +34,10 @@ public class SecurityConfig {
                         .requestMatchers(LINK + "/register")
                         .permitAll()
                         .requestMatchers(LINK + "/all").hasAuthority(ADMIN)
+                        .requestMatchers(LINK + "/get/{userId}").hasAuthority(ADMIN)
                         .requestMatchers(LINK + "/update/{userId}").hasAuthority(ADMIN)
                         .requestMatchers(LINK + "/delete/{userId}").hasAuthority(ADMIN)
-                        .requestMatchers(LINK + "/rmvColab/{userId}").hasAnyAuthority(ADMIN, USER)
+                        .requestMatchers(LINK + "/rmvColab/{taskId}").hasAnyAuthority(ADMIN, USER)
                         .requestMatchers(LINK + "/getUsers/{taskId}").hasAnyAuthority(ADMIN, USER)
                         .requestMatchers(LINK + "/allColab").hasAnyAuthority(ADMIN, USER)
                 );
@@ -49,7 +48,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
         return authenticationManagerBuilder.build();
     }
 
