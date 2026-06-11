@@ -34,12 +34,13 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(LINK + "/register")
-                        .authenticated()
+                        .permitAll()
                         .requestMatchers(LINK + "/all").hasAuthority(ADMIN)
                         .requestMatchers(LINK + "/update/{userId}").hasAuthority(ADMIN)
                         .requestMatchers(LINK + "/delete/{userId}").hasAuthority(ADMIN)
                         .requestMatchers(LINK + "/rmvColab/{userId}").hasAnyAuthority(ADMIN, USER)
                         .requestMatchers(LINK + "/getUsers/{taskId}").hasAnyAuthority(ADMIN, USER)
+                        .requestMatchers(LINK + "/allColab").hasAnyAuthority(ADMIN, USER)
                 );
 
         return http.build();
