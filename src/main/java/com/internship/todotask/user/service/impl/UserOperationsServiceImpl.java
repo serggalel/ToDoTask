@@ -2,8 +2,10 @@ package com.internship.todotask.user.service.impl;
 
 import com.internship.todotask.user.exception.UserAlreadyExistsException;
 import com.internship.todotask.user.exception.UserNotFoundException;
+import com.internship.todotask.user.mapper.UserCollabDtoMapper;
 import com.internship.todotask.user.mapper.UserDtoMapper;
 import com.internship.todotask.user.model.dictionary.Role;
+import com.internship.todotask.user.model.dto.UserCollabDto;
 import com.internship.todotask.user.model.dto.UserDto;
 import com.internship.todotask.user.model.entity.UserEntity;
 import com.internship.todotask.user.repository.UserRepository;
@@ -17,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -27,6 +30,8 @@ public class UserOperationsServiceImpl implements UserOperationsService {
     private final UserDtoMapper userDtoMapper;
 
     private final PasswordEncoder passwordEncoder;
+
+    private final UserCollabDtoMapper userCollabDtoMapper;
 
     private static final String USER_NOT_FOUND_STRING = "User was not found with id: ";
 
@@ -79,13 +84,25 @@ public class UserOperationsServiceImpl implements UserOperationsService {
     }
 
     @Override
-    public Page<UserEntity> getAllCollaborators(Long userId, Long taskId, int page, int size, String sortBy, String direction) {
-        Set<Long> userIds = userRepository.getUserIdsByTaskId(taskId);
-        userIds.remove(userId);
+    public Page<UserCollabDto> getAllCollaborators(Long taskId, int page, int size, String sortBy, String direction) {
         Sort sort = direction.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
                 Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        return userRepository.findAllByIdIn(userIds, pageable);
+        return userRepository.findAllCollaborators(taskId, pageable).map(userCollabDtoMapper::fromEntity);
+    }
+
+    @Override
+    public List<UserCollabDto> getPotentialCollaborators(Long taskId) {
+        return userRepository.findPotentialCollaborators(taskId)
+                .stream()
+                .map(userCollabDtoMapper::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public String addCollaborator(Long userId, Long taskId) {
+        userRepository.addCollaborator(userId, taskId);
+        return "Collaborator added successfully!";
     }
 
     private boolean emailExists(String email) {

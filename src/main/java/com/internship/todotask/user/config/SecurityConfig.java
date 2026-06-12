@@ -37,9 +37,10 @@ public class SecurityConfig {
                         .requestMatchers(LINK + "/get/{userId}").hasAuthority(ADMIN)
                         .requestMatchers(LINK + "/update/{userId}").hasAuthority(ADMIN)
                         .requestMatchers(LINK + "/delete/{userId}").hasAuthority(ADMIN)
-                        .requestMatchers(LINK + "/rmvColab/{taskId}").hasAnyAuthority(ADMIN, USER)
-                        .requestMatchers(LINK + "/getUsers/{taskId}").hasAnyAuthority(ADMIN, USER)
-                        .requestMatchers(LINK + "/allColab").hasAnyAuthority(ADMIN, USER)
+                        .requestMatchers(LINK + "/getCollabs/{taskId}").hasAnyAuthority(ADMIN, USER)
+                        .requestMatchers(LINK + "/getPossCollabs/{taskId}").hasAnyAuthority(ADMIN, USER)
+                        .requestMatchers(LINK + "/rmvCollab").hasAnyAuthority(ADMIN, USER)
+                        .requestMatchers(LINK + "/addCollab").hasAnyAuthority(ADMIN, USER)
                 );
 
         return http.build();
