@@ -1,11 +1,9 @@
 package com.internship.todotask.user.service.impl;
 
-import com.internship.todotask.user.model.dto.UserDto;
+import com.internship.todotask.user.mapper.UserDetailsDtoMapper;
 import com.internship.todotask.user.model.entity.UserEntity;
 import com.internship.todotask.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,20 +19,14 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    private final UserDetailsDtoMapper userDetailsDtoMapper;
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserEntity userEntity = userRepository.findUserEntityByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        return User.builder()
-                .username(userEntity.getEmail())
-                .password(userEntity.getPassword())
-                .roles(userEntity.getRole().toString())
-                .build();
-    }
-
-    public UserDto getCurrentUser() {
-        return (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userDetailsDtoMapper.fromEntity(userEntity);
     }
 
 }

@@ -1,6 +1,8 @@
 package com.internship.todotask.user.controller;
 
+import com.internship.todotask.user.model.dto.CollabRequestDto;
 import com.internship.todotask.user.model.dto.UserCollabDto;
+import com.internship.todotask.user.model.dto.UserDetailsDto;
 import com.internship.todotask.user.model.dto.UserDto;
 import com.internship.todotask.user.model.entity.UserEntity;
 import com.internship.todotask.user.service.UserOperationsService;
@@ -44,13 +46,12 @@ public class UserController {
         return userOperationsService.getUserById(id);
     }
 
-    @PostMapping("/update/{id}")
+    @PostMapping("/update")
     @ResponseBody
     public String updateUser(
-            @PathVariable Long id,
-            @Valid @RequestBody UserSecurityDto userDto
+            @Valid @RequestBody UserDetailsDto userDto
             ) {
-        return userOperationsService.updateUser(id, userDto);
+        return userOperationsService.updateUser(userDto);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -81,19 +82,17 @@ public class UserController {
     @DeleteMapping("/rmvCollab")
     @ResponseBody
     public String removeCollaborator(
-            @RequestParam Long taskId,
-            @RequestParam Long userId
+            @Valid @RequestBody CollabRequestDto collabRequestDto
     ) {
-        return userOperationsService.removeCollaborator(userId, taskId);
+        return userOperationsService.removeCollaborator(collabRequestDto);
     }
 
     @PostMapping("/addCollab")
     @ResponseBody
     public String addCollaborator(
-            @RequestParam Long userId,
-            @RequestParam Long taskId
+            @Valid @RequestBody CollabRequestDto collabRequestDto
     ) {
-        return userOperationsService.addCollaborator(userId, taskId);
+        return userOperationsService.addCollaborator(collabRequestDto);
     }
 
 }

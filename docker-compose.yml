@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: local_postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: serggalel
+      POSTGRES_PASSWORD: strong_pass
+      POSTGRES_DB: todotask_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Prevents data loss on restart
+
+volumes:
+  postgres_data:
