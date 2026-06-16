@@ -3,19 +3,24 @@ package com.internship.todotask.user.config;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
+
 @AllArgsConstructor
 @Configuration
 @EnableWebSecurity
+@EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 public class SecurityConfig {
 
     private static final String ADMIN = "admin";
@@ -29,13 +34,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) {
         http
+                .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(LINK + "/register")
                         .permitAll()
                         .requestMatchers(LINK + "/all").hasAuthority(ADMIN)
                         .requestMatchers(LINK + "/get/{userId}").hasAuthority(ADMIN)
-                        .requestMatchers(LINK + "/update/{userId}").hasAuthority(ADMIN)
+                        .requestMatchers(LINK + "/update").hasAuthority(ADMIN)
                         .requestMatchers(LINK + "/delete/{userId}").hasAuthority(ADMIN)
                         .requestMatchers(LINK + "/getCollabs/{taskId}").hasAnyAuthority(ADMIN, USER)
                         .requestMatchers(LINK + "/getPossCollabs/{taskId}").hasAnyAuthority(ADMIN, USER)

@@ -4,8 +4,9 @@ import com.internship.todotask.user.exception.UserAlreadyExistsException;
 import com.internship.todotask.user.exception.UserNotFoundException;
 import com.internship.todotask.user.mapper.UserCollabDtoMapper;
 import com.internship.todotask.user.mapper.UserDtoMapper;
-import com.internship.todotask.user.model.dictionary.Role;
+import com.internship.todotask.user.model.dto.CollabRequestDto;
 import com.internship.todotask.user.model.dto.UserCollabDto;
+import com.internship.todotask.user.model.dto.UserDetailsDto;
 import com.internship.todotask.user.model.dto.UserDto;
 import com.internship.todotask.user.model.entity.UserEntity;
 import com.internship.todotask.user.repository.UserRepository;
@@ -17,9 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -57,19 +58,22 @@ public class UserOperationsServiceImpl implements UserOperationsService {
         return userRepository.findUserEntityById(userId);
     }
 
+    @Transactional
     @Override
-    public String updateUser(Long userId, UserDto newUserDto, Role role) {
+    public String updateUser(UserDetailsDto newUserDto) {
+        Long userId = newUserDto.getId();
         UserEntity existingUser = userRepository.findUserEntityById(userId)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND_STRING + userId));
         existingUser.setFirstName(newUserDto.getFirstName());
         existingUser.setLastName(newUserDto.getLastName());
         existingUser.setEmail(newUserDto.getEmail());
         existingUser.setPassword(passwordEncoder.encode(newUserDto.getPassword()));
-        existingUser.setRole(role);
+        existingUser.setRole(newUserDto.getRole());
         userRepository.save(existingUser);
         return "The update was successful!";
     }
 
+    @Transactional
     @Override
     public String deleteUser(Long userId) {
         if (userIdDoesntExist(userId)) throw new UserNotFoundException(USER_NOT_FOUND_STRING + userId);
@@ -77,9 +81,10 @@ public class UserOperationsServiceImpl implements UserOperationsService {
         return "The deletion was successful!";
     }
 
+    @Transactional
     @Override
-    public String removeCollaborator(Long userId, Long taskId) {
-        userRepository.deleteCollaborator(userId, taskId);
+    public String removeCollaborator(CollabRequestDto collabRequestDto) {
+        userRepository.deleteCollaborator(collabRequestDto.getUserId(), collabRequestDto.getTaskId());
         return "The collaborator was successfully removed!";
     }
 
@@ -96,12 +101,15 @@ public class UserOperationsServiceImpl implements UserOperationsService {
         return userRepository.findPotentialCollaborators(taskId)
                 .stream()
                 .map(userCollabDtoMapper::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
+    @Transactional
     @Override
-    public String addCollaborator(Long userId, Long taskId) {
-        userRepository.addCollaborator(userId, taskId);
+    public String addCollaborator(CollabRequestDto collabRequestDto) {
+        Long userId = collabRequestDto.getUserId();
+        if (userIdDoesntExist(userId)) throw new UserNotFoundException(USER_NOT_FOUND_STRING + userId);
+        userRepository.addCollaborator(collabRequestDto.getUserId(), collabRequestDto.getTaskId());
         return "Collaborator added successfully!";
     }
 

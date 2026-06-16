@@ -1,8 +1,9 @@
 package com.internship.todotask.user.service;
 
 import com.internship.todotask.user.exception.UserAlreadyExistsException;
-import com.internship.todotask.user.model.dictionary.Role;
+import com.internship.todotask.user.model.dto.CollabRequestDto;
 import com.internship.todotask.user.model.dto.UserCollabDto;
+import com.internship.todotask.user.model.dto.UserDetailsDto;
 import com.internship.todotask.user.model.dto.UserDto;
 import com.internship.todotask.user.model.entity.UserEntity;
 import org.springframework.data.domain.Page;
@@ -18,16 +19,16 @@ public interface UserOperationsService {
 
     Optional<UserEntity> getUserById(Long userId);
 
-    String updateUser(Long userId, UserDto newUserDto, Role role);
+    String updateUser(UserDetailsDto newUserDto);
 
     String deleteUser(Long userId);
 
-    String removeCollaborator(Long userId, Long taskId);
+    String removeCollaborator(CollabRequestDto collabRequestDto);
 
     Page<UserCollabDto> getAllCollaborators(Long taskId, int page, int size, String sortBy, String direction);
 
     List<UserCollabDto> getPotentialCollaborators(Long taskId);
 
-    String addCollaborator(Long userId, Long taskId);
+    String addCollaborator(CollabRequestDto collabRequestDto);
 
 }

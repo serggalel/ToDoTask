@@ -34,7 +34,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     List<UserEntity> findPotentialCollaborators(Long taskId);
 
     @Modifying
-    @Query(value = "INSERT INTO user_task " +
+    @Query(value = "INSERT INTO user_task (user_id, task_id)" +
             "VALUES (:userId, :taskId)", nativeQuery = true)
     void addCollaborator(@Param("userId") Long userId, @Param("taskId") Long taskId);
 
