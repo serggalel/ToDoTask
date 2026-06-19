@@ -27,7 +27,9 @@ public class SecurityConfig {
 
     private static final String USER = "user";
 
-    private static final String LINK = "/api/user";
+    private static final String USER_LINK = "/api/user";
+
+    private static final String TASK_LINK = "/api/task";
 
     private final UserDetailsService userDetailsService;
 
@@ -37,16 +39,21 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(LINK + "/register")
+                        .requestMatchers(USER_LINK + "/register")
                         .permitAll()
-                        .requestMatchers(LINK + "/all").hasAuthority(ADMIN)
-                        .requestMatchers(LINK + "/get/{userId}").hasAuthority(ADMIN)
-                        .requestMatchers(LINK + "/update").hasAuthority(ADMIN)
-                        .requestMatchers(LINK + "/delete/{userId}").hasAuthority(ADMIN)
-                        .requestMatchers(LINK + "/getCollabs/{taskId}").hasAnyAuthority(ADMIN, USER)
-                        .requestMatchers(LINK + "/getPossCollabs/{taskId}").hasAnyAuthority(ADMIN, USER)
-                        .requestMatchers(LINK + "/rmvCollab").hasAnyAuthority(ADMIN, USER)
-                        .requestMatchers(LINK + "/addCollab").hasAnyAuthority(ADMIN, USER)
+                        .requestMatchers(USER_LINK + "/all").hasAuthority(ADMIN)
+                        .requestMatchers(USER_LINK + "/get/{userId}").hasAuthority(ADMIN)
+                        .requestMatchers(USER_LINK + "/update").hasAuthority(ADMIN)
+                        .requestMatchers(USER_LINK + "/delete/{userId}").hasAuthority(ADMIN)
+                        .requestMatchers(USER_LINK + "/getCollabs/{taskId}").hasAnyAuthority(ADMIN, USER)
+                        .requestMatchers(USER_LINK + "/getPossCollabs/{taskId}").hasAnyAuthority(ADMIN, USER)
+                        .requestMatchers(USER_LINK + "/rmvCollab").hasAnyAuthority(ADMIN, USER)
+                        .requestMatchers(USER_LINK + "/addCollab").hasAnyAuthority(ADMIN, USER)
+                        .requestMatchers(TASK_LINK + "/create").hasAnyAuthority(ADMIN, USER)
+                        .requestMatchers(TASK_LINK + "/update").hasAnyAuthority(ADMIN, USER)
+                        .requestMatchers(TASK_LINK + "/getByUser/{userId}").hasAnyAuthority(ADMIN, USER)
+                        .requestMatchers(TASK_LINK + "/delete/{taskId}").hasAnyAuthority(ADMIN, USER)
+                        .anyRequest().authenticated()
                 );
 
         return http.build();
