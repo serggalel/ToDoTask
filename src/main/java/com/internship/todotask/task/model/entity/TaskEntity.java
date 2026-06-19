@@ -32,8 +32,7 @@ public class TaskEntity {
     @Convert(converter = StateConverter.class)
     private State state;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", nullable = false)
-    private UserEntity owner;
+    @Column(name = "owner_id", nullable = false)
+    private Long ownerId;
 
 }
