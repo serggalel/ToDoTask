@@ -20,22 +20,26 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     void deleteUserEntityById(Long id);
 
     @Modifying
-    @Query(value = "DELETE FROM user_task WHERE user_id = :userId AND task_id = :taskId", nativeQuery = true)
+    @Query(value = "DELETE FROM collaborators_tasks WHERE user_id = :userId AND task_id = :taskId", nativeQuery = true)
     void deleteCollaborator(@Param("userId") Long userId, @Param("taskId") Long taskId);
 
     @Query(value = "SELECT u.* FROM users u " +
-            "JOIN user_task ut ON u.id = ut.user_id " +
-            "WHERE ut.task_id = :taskId", nativeQuery = true)
+            "JOIN collaborators_tasks ct ON u.id = ct.user_id " +
+            "WHERE ct.task_id = :taskId", nativeQuery = true)
     Page<UserEntity> findAllCollaborators(@Param("taskId") Long taskId, Pageable pageable);
 
     @Query(value = "SELECT * FROM users " +
             "WHERE id NOT IN " +
-            "(SELECT user_id FROM user_task WHERE task_id = :taskId)", nativeQuery = true)
+            "(SELECT user_id FROM collaborators_tasks WHERE task_id = :taskId)", nativeQuery = true)
     List<UserEntity> findPotentialCollaborators(Long taskId);
 
     @Modifying
-    @Query(value = "INSERT INTO user_task (user_id, task_id)" +
+    @Query(value = "INSERT INTO collaborators_tasks (user_id, task_id)" +
             "VALUES (:userId, :taskId)", nativeQuery = true)
     void addCollaborator(@Param("userId") Long userId, @Param("taskId") Long taskId);
+
+    @Modifying
+    @Query(value = "DELETE FROM collaborators_tasks WHERE user_id = :userId", nativeQuery = true)
+    void deleteCollabOnUserDeletion(@Param("userId") Long userId);
 
 }

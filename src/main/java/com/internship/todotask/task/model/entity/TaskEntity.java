@@ -4,6 +4,7 @@ import com.internship.todotask.task.model.dictionary.Priority;
 import com.internship.todotask.task.model.dictionary.PriorityConverter;
 import com.internship.todotask.task.model.dictionary.State;
 import com.internship.todotask.task.model.dictionary.StateConverter;
+import com.internship.todotask.user.model.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +32,8 @@ public class TaskEntity {
     @Convert(converter = StateConverter.class)
     private State state;
 
-    @Column(name = "owner_id", nullable = false)
-    private Long ownerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", nullable = false)
+    private UserEntity owner;
 
 }
