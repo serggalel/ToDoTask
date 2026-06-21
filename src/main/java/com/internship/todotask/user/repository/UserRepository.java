@@ -1,6 +1,5 @@
 package com.internship.todotask.user.repository;
 
-import com.internship.todotask.user.model.dto.UserCollabDto;
 import com.internship.todotask.user.model.entity.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +27,11 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             "WHERE ct.task_id = :taskId", nativeQuery = true)
     Page<UserEntity> findAllCollaborators(@Param("taskId") Long taskId, Pageable pageable);
 
+    @Query(value = "SELECT u.* FROM users u " +
+            "JOIN collaborators_tasks ct ON u.id = ct.user_id " +
+            "WHERE ct.task_id = :taskId", nativeQuery = true)
+    List<UserEntity> findAllCollaborators(@Param("taskId") Long taskId);
+
     @Query(value = "SELECT * FROM users " +
             "WHERE id NOT IN " +
             "(SELECT user_id FROM collaborators_tasks WHERE task_id = :taskId)", nativeQuery = true)
@@ -38,7 +42,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             "VALUES (:userId, :taskId)", nativeQuery = true)
     void addCollaborator(@Param("userId") Long userId, @Param("taskId") Long taskId);
 
-    @Modifying
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value = "DELETE FROM collaborators_tasks WHERE user_id = :userId", nativeQuery = true)
     void deleteCollabOnUserDeletion(@Param("userId") Long userId);
 
