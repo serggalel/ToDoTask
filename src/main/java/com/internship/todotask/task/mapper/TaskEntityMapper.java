@@ -15,7 +15,6 @@ public class TaskEntityMapper {
         taskEntity.setName(taskDto.getName());
         taskEntity.setPriority(taskDto.getPriority());
         taskEntity.setState(State.TODO);
-        taskEntity.setOwnerId(taskDto.getOwnerId());
         return taskEntity;
     }
 

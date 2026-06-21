@@ -39,6 +39,7 @@ public class UserDetailsDto implements UserDetails {
     private String password;
 
     @Convert(converter = ConverterEnum.class)
+    @NotNull(message = "Role is mandatory")
     private Role role;
 
     @Override

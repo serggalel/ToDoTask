@@ -24,11 +24,11 @@ public class TaskDetailsDto {
     @NotBlank(message = "Name is mandatory")
     private String name;
 
-    @NotBlank(message = "Priority is mandatory")
+    @NotNull(message = "Priority is mandatory")
     @Convert(converter = PriorityConverter.class)
     private Priority priority;
 
-    @NotBlank(message = "Priority is mandatory")
+    @NotNull(message = "Priority is mandatory")
     @Convert(converter = StateConverter.class)
     private State state;
 

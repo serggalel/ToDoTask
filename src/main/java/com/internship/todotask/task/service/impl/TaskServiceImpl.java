@@ -23,7 +23,7 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskEntityMapper taskEntityMapper;
 
-    private static final String TASK_NOT_FOUND_STRING = "Task was not found with id: ";
+    public static final String TASK_NOT_FOUND_STRING = "Task was not found with id: ";
 
     private static final String USER_IS_NOT_THE_OWNER_STRING = "User is not the owner of the task!";
 
@@ -35,6 +35,7 @@ public class TaskServiceImpl implements TaskService {
         return "Successfully created a task!";
     }
 
+    @Transactional
     @Override
     public String updateTask(Long userId, TaskDetailsDto taskDetailsDto) {
         Long taskId = taskDetailsDto.getId();
@@ -65,8 +66,9 @@ public class TaskServiceImpl implements TaskService {
         TaskEntity taskEntity = taskRepository.findTaskEntityById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException(TASK_NOT_FOUND_STRING + taskId));
         if(!taskEntity.getOwnerId().equals(userId)) throw new UserIsNotTheOwnerException(USER_IS_NOT_THE_OWNER_STRING);
+        taskRepository.deleteCollabOnTaskDeletion(taskId);
         taskRepository.delete(taskEntity);
-        return null;
+        return "The deletion was successful!";
     }
 
 }
