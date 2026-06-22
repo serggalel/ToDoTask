@@ -1,5 +1,8 @@
 package com.internship.todotask.user.model.dto;
 
+import com.internship.todotask.user.model.dictionary.ConverterEnum;
+import com.internship.todotask.user.model.dictionary.Role;
+import jakarta.persistence.Convert;
 import lombok.*;
 
 @Getter
@@ -12,5 +15,8 @@ public class UserBasicInfoDto {
     private String firstName;
 
     private String lastName;
+
+    @Convert(converter = ConverterEnum.class)
+    private Role role;
 
 }

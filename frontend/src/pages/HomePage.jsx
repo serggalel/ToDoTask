@@ -9,12 +9,12 @@ export default function HomePage() {
         <div style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
             <h1>Welcome, {currentUser.firstName}!</h1>
             <p style={{ color: '#666', marginBottom: '30px' }}>
-                This is your central dashboard. Use the navigation bar above to manage your tasks.
+                This is your central dashboard. Use the navigation bar above to navigate.
             </p>
 
             <img
                 src={todotasksImage}
-                alt="Home Page Hero"
+                alt="Home Page"
                 style={{
                     width: '100%',
                     height: 'auto',

@@ -29,7 +29,7 @@ export default function MainLayout() {
                 <Link to="/home" style={{ color: 'white', textDecoration: 'none' }}>Home</Link>
                 <Link to="/tasks" style={{ color: 'white', textDecoration: 'none' }}>My Tasks</Link>
 
-                {currentUser.role === 'admin' && (
+                {currentUser.role === 'ADMIN' && (
                     <Link to="/users" style={{ color: 'white', textDecoration: 'none' }}>All Users</Link>
                 )}
 

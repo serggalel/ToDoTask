@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 
@@ -8,13 +8,20 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const userString = localStorage.getItem('currentUser');
+        if (userString) {
+            navigate('/home');
+        }
+    }, [navigate]);
+
     const handleLogin = async (e) => {
         e.preventDefault();
 
         const credentials = btoa(`${email}:${password}`);
 
         try {
-            const response = await api.get('/me', {
+            const response = await api.get('/user/me', {
                 headers: { Authorization: `Basic ${credentials}` }
             });
 
