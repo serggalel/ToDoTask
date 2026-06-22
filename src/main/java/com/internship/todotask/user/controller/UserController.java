@@ -1,7 +1,7 @@
 package com.internship.todotask.user.controller;
 
 import com.internship.todotask.user.model.dto.CollabRequestDto;
-import com.internship.todotask.user.model.dto.UserCollabDto;
+import com.internship.todotask.user.model.dto.UserBasicInfoDto;
 import com.internship.todotask.user.model.dto.UserDetailsDto;
 import com.internship.todotask.user.model.dto.UserDto;
 import com.internship.todotask.user.model.entity.UserEntity;
@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -61,17 +62,17 @@ public class UserController {
 
     @GetMapping("/getCollabs/{taskId}")
     @ResponseBody
-    public ResponseEntity<Page<UserCollabDto>> getAllCollaborators(
+    public ResponseEntity<Page<UserBasicInfoDto>> getAllCollaborators(
             @PathVariable Long taskId,
             @PageableDefault(sort = "id") Pageable pageable
     ) {
-        Page<UserCollabDto> userCollabDtoPage = userOperationsService.getAllCollaborators(taskId, pageable);
+        Page<UserBasicInfoDto> userCollabDtoPage = userOperationsService.getAllCollaborators(taskId, pageable);
         return ResponseEntity.ok(userCollabDtoPage);
     }
 
     @GetMapping("/getPossCollabs/{taskId}")
     @ResponseBody
-    public List<UserCollabDto> getPossibleCollaborators(@PathVariable Long taskId) {
+    public List<UserBasicInfoDto> getPossibleCollaborators(@PathVariable Long taskId) {
         return userOperationsService.getPotentialCollaborators(taskId);
     }
 
@@ -89,6 +90,18 @@ public class UserController {
             @Valid @RequestBody CollabRequestDto collabRequestDto
     ) {
         return userOperationsService.addCollaborator(collabRequestDto);
+    }
+
+    @GetMapping("/me")
+    @ResponseBody
+    public ResponseEntity<UserBasicInfoDto> authenticateAndGetProfile(
+            @AuthenticationPrincipal UserDetailsDto userDetailsDto
+    ) {
+        UserBasicInfoDto userBasicInfoDto = new UserBasicInfoDto();
+        userBasicInfoDto.setId(userDetailsDto.getId());
+        userBasicInfoDto.setFirstName(userDetailsDto.getFirstName());
+        userBasicInfoDto.setLastName(userDetailsDto.getLastName());
+        return ResponseEntity.ok(userBasicInfoDto);
     }
 
 }
