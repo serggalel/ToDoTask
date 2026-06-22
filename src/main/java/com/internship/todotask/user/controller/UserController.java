@@ -101,6 +101,7 @@ public class UserController {
         userBasicInfoDto.setId(userDetailsDto.getId());
         userBasicInfoDto.setFirstName(userDetailsDto.getFirstName());
         userBasicInfoDto.setLastName(userDetailsDto.getLastName());
+        userBasicInfoDto.setRole(userDetailsDto.getRole());
         return ResponseEntity.ok(userBasicInfoDto);
     }
 
