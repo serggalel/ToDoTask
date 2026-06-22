@@ -5,7 +5,9 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserCollabDto {
+public class UserBasicInfoDto {
+
+    private Long id;
 
     private String firstName;
 

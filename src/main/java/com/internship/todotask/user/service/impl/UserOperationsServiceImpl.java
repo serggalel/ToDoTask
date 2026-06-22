@@ -6,10 +6,10 @@ import com.internship.todotask.task.model.entity.TaskEntity;
 import com.internship.todotask.task.repository.TaskRepository;
 import com.internship.todotask.user.exception.UserAlreadyExistsException;
 import com.internship.todotask.user.exception.UserNotFoundException;
-import com.internship.todotask.user.mapper.UserCollabDtoMapper;
+import com.internship.todotask.user.mapper.UserBasicInfoDtoMapper;
 import com.internship.todotask.user.mapper.UserDtoMapper;
 import com.internship.todotask.user.model.dto.CollabRequestDto;
-import com.internship.todotask.user.model.dto.UserCollabDto;
+import com.internship.todotask.user.model.dto.UserBasicInfoDto;
 import com.internship.todotask.user.model.dto.UserDetailsDto;
 import com.internship.todotask.user.model.dto.UserDto;
 import com.internship.todotask.user.model.entity.UserEntity;
@@ -36,7 +36,7 @@ public class UserOperationsServiceImpl implements UserOperationsService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final UserCollabDtoMapper userCollabDtoMapper;
+    private final UserBasicInfoDtoMapper userBasicInfoDtoMapper;
 
     private final TaskRepository taskRepository;
 
@@ -124,16 +124,16 @@ public class UserOperationsServiceImpl implements UserOperationsService {
     }
 
     @Override
-    public Page<UserCollabDto> getAllCollaborators(Long taskId, Pageable pageable) {
-        return userRepository.findAllCollaborators(taskId, pageable).map(userCollabDtoMapper::fromEntity);
+    public Page<UserBasicInfoDto> getAllCollaborators(Long taskId, Pageable pageable) {
+        return userRepository.findAllCollaborators(taskId, pageable).map(userBasicInfoDtoMapper::fromEntity);
     }
 
     @Override
-    public List<UserCollabDto> getPotentialCollaborators(Long taskId) {
+    public List<UserBasicInfoDto> getPotentialCollaborators(Long taskId) {
         return userRepository.findPotentialCollaborators(taskId)
                 .stream()
                 .filter(user -> !userIsTheOwner(user.getId(), taskId))
-                .map(userCollabDtoMapper::fromEntity)
+                .map(userBasicInfoDtoMapper::fromEntity)
                 .toList();
     }
 

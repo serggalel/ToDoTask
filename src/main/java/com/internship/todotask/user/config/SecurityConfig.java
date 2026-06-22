@@ -47,6 +47,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(USER_LINK + "/register")
                         .permitAll()
+                        .requestMatchers(USER_LINK + "/me")
+                        .permitAll()
                         .requestMatchers(USER_LINK + "/all").hasAuthority(ADMIN)
                         .requestMatchers(USER_LINK + "/get/{userId}").hasAuthority(ADMIN)
                         .requestMatchers(USER_LINK + "/update").hasAuthority(ADMIN)

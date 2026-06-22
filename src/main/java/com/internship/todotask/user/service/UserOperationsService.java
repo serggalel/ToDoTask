@@ -2,7 +2,7 @@ package com.internship.todotask.user.service;
 
 import com.internship.todotask.user.exception.UserAlreadyExistsException;
 import com.internship.todotask.user.model.dto.CollabRequestDto;
-import com.internship.todotask.user.model.dto.UserCollabDto;
+import com.internship.todotask.user.model.dto.UserBasicInfoDto;
 import com.internship.todotask.user.model.dto.UserDetailsDto;
 import com.internship.todotask.user.model.dto.UserDto;
 import com.internship.todotask.user.model.entity.UserEntity;
@@ -26,9 +26,9 @@ public interface UserOperationsService {
 
     String removeCollaborator(CollabRequestDto collabRequestDto);
 
-    Page<UserCollabDto> getAllCollaborators(Long taskId, Pageable pageable);
+    Page<UserBasicInfoDto> getAllCollaborators(Long taskId, Pageable pageable);
 
-    List<UserCollabDto> getPotentialCollaborators(Long taskId);
+    List<UserBasicInfoDto> getPotentialCollaborators(Long taskId);
 
     String addCollaborator(CollabRequestDto collabRequestDto);
 
