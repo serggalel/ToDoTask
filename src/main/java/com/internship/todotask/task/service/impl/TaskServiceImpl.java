@@ -9,6 +9,8 @@ import com.internship.todotask.task.model.dto.UserTaskDto;
 import com.internship.todotask.task.model.entity.TaskEntity;
 import com.internship.todotask.task.repository.TaskRepository;
 import com.internship.todotask.task.service.TaskService;
+import com.internship.todotask.user.model.entity.UserEntity;
+import com.internship.todotask.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +24,8 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
 
     private final TaskEntityMapper taskEntityMapper;
+
+    private final UserRepository userRepository;
 
     public static final String TASK_NOT_FOUND_STRING = "Task was not found with id: ";
 
@@ -51,13 +55,31 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public UserTaskDto getTasksByUserId(Long userId, Pageable ownedPageable, Pageable collabPageable) {
-        Page<TaskEntity> owned = taskRepository.findTaskEntitiesByOwnerId(userId, ownedPageable);
-        Page<TaskEntity> collabTasks = taskRepository.findTaskEntitiesByCollaboratorId(userId, collabPageable);
 
-        return new UserTaskDto (
-                owned.map(taskEntityMapper::fromEntity),
-                collabTasks.map(taskEntityMapper::fromEntity)
-        );
+        UserEntity currentUser = userRepository.findById(userId).orElse(null);
+
+        Page<TaskEntity> ownedEntities = taskRepository.findTaskEntitiesByOwnerId(userId, ownedPageable);
+        Page<TaskEntity> collabEntities = taskRepository.findTaskEntitiesByCollaboratorId(userId, collabPageable);
+
+        Page<TaskDetailsDto> ownedDtoPage = ownedEntities.map(task -> {
+            TaskDetailsDto dto = taskEntityMapper.fromEntity(task);
+            if (currentUser != null) {
+                dto.setOwnerFirstName(currentUser.getFirstName());
+                dto.setOwnerLastName(currentUser.getLastName());
+            }
+            return dto;
+        });
+
+        Page<TaskDetailsDto> collabDtoPage = collabEntities.map(task -> {
+            TaskDetailsDto dto = taskEntityMapper.fromEntity(task);
+
+            userRepository.findById(task.getOwnerId()).ifPresent(owner -> {
+                dto.setOwnerFirstName(owner.getFirstName());
+                dto.setOwnerLastName(owner.getLastName());
+            });
+            return dto;
+        });
+        return new UserTaskDto(ownedDtoPage, collabDtoPage);
     }
 
     @Transactional

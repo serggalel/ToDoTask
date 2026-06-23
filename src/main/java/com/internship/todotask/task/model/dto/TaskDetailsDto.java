@@ -32,4 +32,8 @@ public class TaskDetailsDto {
     @Convert(converter = StateConverter.class)
     private State state;
 
+    private String ownerFirstName;
+
+    private String ownerLastName;
+
 }
