@@ -70,7 +70,6 @@ public class UserOperationsServiceImpl implements UserOperationsService {
         existingUser.setFirstName(newUserDto.getFirstName());
         existingUser.setLastName(newUserDto.getLastName());
         existingUser.setEmail(newUserDto.getEmail());
-        existingUser.setPassword(passwordEncoder.encode(newUserDto.getPassword()));
         existingUser.setRole(newUserDto.getRole());
         userRepository.save(existingUser);
         return "The update was successful!";
