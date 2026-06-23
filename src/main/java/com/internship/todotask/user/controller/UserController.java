@@ -76,7 +76,7 @@ public class UserController {
         return userOperationsService.getPotentialCollaborators(taskId);
     }
 
-    @DeleteMapping("/rmvCollab")
+    @PostMapping("/rmvCollab")
     @ResponseBody
     public String removeCollaborator(
             @Valid @RequestBody CollabRequestDto collabRequestDto
