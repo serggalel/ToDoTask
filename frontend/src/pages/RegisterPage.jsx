@@ -2,6 +2,16 @@ import {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 
+const styles = {
+    container: { maxWidth: '400px', margin: '80px auto', padding: '40px', backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: '0 4px 15px rgba(0,0,0,0.1)', textAlign: 'center' },
+    heading: { color: '#333', marginBottom: '25px', marginTop: 0 },
+    form: { display: 'flex', flexDirection: 'column', gap: '15px' },
+    input: { padding: '12px', border: '1px solid #ccc', borderRadius: '4px', fontSize: '15px', boxSizing: 'border-box' },
+    button: { padding: '12px', backgroundColor: '#2196F3', color: 'white', border: 'none', borderRadius: '4px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px' },
+    footer: { marginTop: '25px', color: '#666', fontSize: '14px' },
+    linkBtn: { background: 'none', border: 'none', color: '#2196F3', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px', padding: '0 5px' }
+};
+
 export default function RegisterPage() {
 
     const [firstName, setFirstName] = useState('');
@@ -51,10 +61,10 @@ export default function RegisterPage() {
     };
 
     return (
-        <div style={{ maxWidth: '400px', margin: '50px auto', textAlign: 'center' }}>
-            <h2>Create an Account</h2>
+        <div style={styles.container}>
+            <h2 style={styles.heading}>Create an Account</h2>
 
-            <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+            <form onSubmit={handleRegister} style={styles.form}>
 
                 <input
                     type="text"
@@ -62,6 +72,7 @@ export default function RegisterPage() {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     required
+                    style={styles.input}
                 />
 
                 <input
@@ -70,6 +81,7 @@ export default function RegisterPage() {
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     required
+                    style={styles.input}
                 />
 
                 <input
@@ -78,6 +90,7 @@ export default function RegisterPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    style={styles.input}
                 />
 
                 <input
@@ -86,16 +99,17 @@ export default function RegisterPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    style={styles.input}
                 />
 
-                <button type="submit" style={{ padding: '10px', marginTop: '10px' }}>
+                <button type="submit" style={styles.button}>
                     Register
                 </button>
             </form>
 
-            <div style={{ marginTop: '20px' }}>
-                <p>Already have an account?</p>
-                <button type="button" onClick={() => navigate('/login')}>
+            <div style={styles.footer}>
+                <p style={{ margin: '0 0 10px 0' }}>Already have an account?</p>
+                <button type="button" onClick={() => navigate('/login')} style={styles.linkBtn}>
                     Log In Here
                 </button>
             </div>
